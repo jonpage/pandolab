@@ -1,6 +1,8 @@
 # PandoLab 
 PandoLab is an online economic experiment manager with the underlying structure and terminology inspired by z-Tree. For more information on z-Tree see the [z-Tree Wiki](https://www.uzh.ch/iew/ztree/ssl-dir/wiki/) or the [z-Tree Home Page](http://www.iew.uzh.ch/ztree/).
 
+View a working version of this application at [PandoLab.com](http://pandolab.com/).
+
 # Setup
 The online PandoLab application is hosted on [Modulus](https://modulus.io/). So, if you are using a different environment you will need to make a few changes to the code.
 
