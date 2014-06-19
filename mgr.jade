@@ -1,0 +1,11 @@
+p Clients Table
+table
+   tr
+      th Subject Number
+      th State
+   for subject, i in clients
+      tr
+         td #{i}
+         td #{subject.state}
+button#lock Lock Subjects
+button#start Start Session

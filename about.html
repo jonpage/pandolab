@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Experiment Manager</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+  <script src="../assets/js/html5shiv.js"></script>
+  <script src="../assets/js/respond.min.js"></script>
+<![endif]-->
+        <script src="../js/jquery-2.0.2.min.js"></script>
+        <script src="../js/bootstrap.min.js"></script>
+        <script src="../js/parsley.min.js"></script>
+        <style type="text/css" media="screen">
+            body {
+                position: relative; /* For scrollyspy */
+                padding: 50px;
+            }
+
+            // from getbootstrap.com css
+            /* By default it's not affixed in mobile views, so undo that */
+            .sidebar.affix {
+                position: static;
+            }
+
+            /* First level of nav */
+            .sidenav {
+              margin-top: 40px;
+              margin-bottom: 30px;
+              padding-top:    10px;
+              padding-bottom: 10px;
+              text-shadow: 0 1px 0 #fff;
+              background-color: #f7f5fa;
+              border-radius: 5px;
+            }
+
+            /* All levels of nav */
+            .sidebar .nav > li > a {
+              display: block;
+              color: #6F7387;
+              padding: 5px 20px;
+            }
+            .sidebar .nav > li > a:hover,
+            .sidebar .nav > li > a:focus {
+              text-decoration: none;
+              background-color: #e5e3e9;
+              border-right: 1px solid #dbd8e0;
+            }
+            .sidebar .nav > .active > a,
+            .sidebar .nav > .active:hover > a,
+            .sidebar .nav > .active:focus > a {
+              font-weight: bold;
+              color: #345686;
+              background-color: transparent;
+              border-right: 1px solid #345686;
+            }
+
+            /* Nav: second level (shown on .active) */
+            .sidebar .nav .nav {
+              display: none; /* Hide by default, but at >768px, show it */
+              margin-bottom: 8px;
+            }
+            .sidebar .nav .nav > li > a {
+              padding-top:    3px;
+              padding-bottom: 3px;
+              padding-left: 30px;
+              font-size: 90%;
+            }
+
+            /* Show and affix the side nav when space allows it */
+            @media (max-width: 992px) {
+                .sidebar.affix {
+                    position: static;
+                }
+            }
+            @media screen and (min-width: 992px) {
+              .sidebar .nav > .active > ul {
+                display: block;
+              }
+              /* Widen the fixed sidebar */
+              .sidebar.affix,
+              .sidebar.affix-bottom {
+                width: 213px;
+              }
+              .sidebar.affix {
+                position: fixed; /* Undo the static from mobile first approach */
+                top: 80px;
+              }
+              .sidebar.affix-bottom {
+                position: absolute; /* Undo the static from mobile first approach */
+              }
+              .sidebar.affix-bottom .bs-sidenav,
+              .sidebar.affix .bs-sidenav {
+                margin-top: 0;
+                margin-bottom: 0;
+              }
+            }
+            @media screen and (min-width: 1200px) {
+              /* Widen the fixed sidebar again */
+              .sidebar.affix-bottom,
+              .sidebar.affix {
+                width: 263px;
+              }
+            }
+            
+            /* Space things out */
+            .bs-docs-section + .bs-docs-section {
+              padding-top: 40px;
+            }
+            /* Janky fix for preventing navbar from overlapping */
+            h1[id] {
+              padding-top: 80px;
+              margin-top: -45px;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">&hellip;</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="/" class="navbar-brand">PandoLab</a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav pull-right">
+                <li class="active">
+                    <a href="#">About</a>
+                </li>
+            </ul>
+        </div>
+        </nav>
+
+        <div class="container docs-container">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="sidebar affix" role="complementary">
+                        <ul class="nav sidenav">
+                            <li class="active"><a href="#introduction">Introduction</a></li>
+                            <li>
+                            <a href="#screens">Screens</a>
+                            </li>
+                            <li>
+                            <a href="#programs">Programs</a>
+                            </li>
+                            <li>
+                            <a href="#stage-tree">Stage-Tree</a>
+                            </li>
+                            <li>
+                            <a href="#examples">Examples</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-9" role="main">
+                    <div class="docs-section">
+                        <div class="page-header"><h1 id="introduction">Introduction</h1></div>
+
+                        <p>PandoLab is an online economic experiment manager with the underlying
+                        structure and terminology inspired by z-Tree. As a result, this overview assumes
+                        familiarity with z-Tree terms and concepts (for more information on z-Tree see
+                        the <a href="https://www.uzh.ch/iew/ztree/ssl-dir/wiki/">z-Tree Wiki</a> or the <a href="http://www.iew.uzh.ch/ztree/">z-Tree Home Page</a>). Treatments are comprised of the following three components:</p>
+
+                        <ul>
+                            <li>
+                            <a href="#screens">Screens (*.jade)</a>
+                            </li>
+                            <li>
+                            <a href="#programs">Programs (script.js)</a>
+                            </li>
+                            <li>
+                            <a href="#stage-tree">Stage-Tree (treatment.json)</a>
+                            </li>
+                            <li>
+                            <a href="#examples">Examples</a>
+                            </li>
+                        </ul>
+
+                        <p>These elements need to be archived and compressed into a single
+                        ZIP file before being uploaded to the PandoLab server.</p>
+                    </div>
+
+                    <div class="docs-section">
+                        <div class="page-header"><h1 id="screens">Screens <small>*.jade</small></h1></div>
+
+                        <p>Screens are defined by <a
+                            href="http://jade-lang.com">Jade</a> template files.
+                        Jade simplifies the process of generating the HTML that
+                        subjects will view in their browser, eliminating much of
+                        the typical clutter and redundancy. Additionally, screens 
+                        will be loaded into a body element in the subject&apos;s
+                        browser, further reducing the complexity of screen files. To
+                        simplify styling, <a href="http://getbootsrap.com/">Twitter
+                            Bootstrap</a> is available to each screen. To simplify
+                        input checking, <a href="http://parsleyjs.org/">parsley.js</a> is loaded as well.</p>
+                        <p>To create a new screen, create a new file, input the desired elements and save with the jade extension (e.g., wait.jade). Let&apos;s make a simple wait screen.</p>
+
+                    <pre><code>p Please wait for the experiment to continue</code></pre>
+                        <p>This places the text in a paragraph element (&lt;p&gt;). If we have defined a variable, we can access the value by enclosing the variable reference in curly braces with the opening curly brace preceded by <code>#</code>. Here is an example of displaying the value of <code>profit</code> which is a variable in the <code>subjects</code> table (see how we reference the current subject using the variable <code>subjectNum</code>:</p>
+                    <pre><code>p Your profit: #{subjects[subjectNum].profit}</code></pre>
+                        <p>To collect input from a user, simply add an input element with the id set to the desired variable name. In this example I store the current subject&apos;s contribution:</p>
+                    <pre><code>input#contribution</code></pre>
+                        <p>To verify that the contribution was entered before the form is submitted, add the <code>.required</code> class to the input:</p>
+                    <pre><code>input#contribution.required</code></pre>
+                        <p>To require the input to be text, and to be inbetween 0 and 20, we can add some attributes to the input (see <a href="http://parsleyjs.org/documentation.html">parsley documentation</a> for more examples)</p>
+                    <pre><code>input#contribution.required(data-type="number", data-range="[0,20]")</code></pre>
+                        <h3>Variables in Screens</h3>
+                        <p>There are two ways of collecting data from a screen. The first is by using the <code>input</code> element combined with an id as shown above. The second is by adding a property to the <code>experimentData</code> object that lives in the background of the screen (using JavaScript). All properties (i.e., variables) of the <code>experimentData</code> object will be added to the subjects table.</p>
+                        <h3>Experimenting with Screens</h3>
+                        <p>Go to <a href="http://cssdeck.com/labs/full/5iwm1i7m">CSSDeck</a> and click on "Edit Code" in the top-right corner to try out the Jade templating engine and the Bootstrap library. You can enter the code for a screen starting on line 3.</p>
+                    </div>
+                    <div class="docs-section">
+                        <div class="page-header"><h1 id="programs">Programs <small>script.js</small></h1></div>
+                        <p>Programs are defined within a single <code>script.js</code> JavaScript file. This file should export both a <code>beginPeriod(table)</code> function and a <code>beginStage(table, stageName, subjectNum)</code> function (optional functions <code>beginStageEach(table, stageName, subjectNum)</code> and <code>beginStageLast(table, stageName, subjectNum)</code> can also be exported). All code in the <code>beginPeriod(table)</code> function is evaluated at the beginning of each period (this is analgous to all programs being run in the background in zTree). The passed <code>table</code> object allows you to access the default as well as any user-created tables. For example, <code>table.globals.period</code> is the variable holding the current period (zero-indexed to match the behavior of JavaScript arrays). Here's how to export the <code>beginPeriod(table)</code> function</p>
+                        <pre><code>exports.beginPeriod = function(table) {
+    // code goes here
+};</code></pre>
+                        <p>The <code>beginStage(table, stageName, subjectNum)</code> function is evaluated at the beginning of each stage. You can test the value of <code>stageName</code> to control which code is evaluate during specific stages. <code>subjectNum</code> stores the number of the first subject to begin the stage (subject numbers are also zero-indexed). [<code>beginStageEach(table, stageName, subjectNum)</code> is called once for each subject before they begin the stage and <code>beginStageLast(table, stageName, subjectNum)</code> is called once before the last subject to start the stage has begun. If all three functions are exported they are run in the following order: <code>beginStage(.)</code> &rarr; <code>beginStageEach(.)</code> (times the number of subjects) &rarr; <code>beginStageLast(.)</code></p>
+                        <p>Here's how to export the <code>beginStage(.)</code> function:</p>
+                        <pre><code>exports.beginStage = function(table, stageName, subjectNum) {
+    // code goes here
+};</code></pre>
+                        </div>
+
+                        <div class="docs-section">
+                            <div class="page-header"><h1 id="stage-tree">Stage-Tree <small>treatment.json</small></h1></div>
+                            <p>The stage-tree is defined in a single <code>treatment.json</code> file. For ease of description I will assume the object is stored in a variable named <code>treatment</code>. The stage-tree object (i.e., <code>treatment</code>) has the following properties:</p>
+                            <ul>
+                                <li>
+                                    <a href="#treatment-name">name</a>
+                                </li>
+                                <li>
+                                    <a href="#treatment-stages">stages</a>
+                                </li>
+                                <li>
+                                    <a href="#treatment-paying-periods">payingPeriods</a>
+                                </li>
+                                <li>
+                                    <a href="#treatment-practive-periods">practicePeriods</a>
+                                </li>
+                                <li>
+                                    <a href="#treatment-group-size">groupSize</a>
+                                </li>
+                                <li>
+                                    <a href="#treatment-exchange-rate">exchangeRate</a>
+                                </li>
+                                <li>
+                                    <a href="#treatment-start-endowment">startEndowment</a>
+                                </li>
+                                <li>
+                                    <a href="#treatment-show-up-fee">showUpFee</a>
+                                </li>
+                            </ul>
+
+                            <h3 id="treatment-name">name</h3>
+                            <ul>
+                                <li><code>String</code> This can be any arbitrary string, but in general should be a concise description of the treatment.</li>
+                            </ul>
+
+                            <h3 id="treatment-stages">stages</h3>
+                            <ul>
+                                <li><code>Array</code> with each element having the following properties:
+                                    <ul>
+                                        <li><strong>name</strong> <code>String</code> internal name for the stage.</li>
+                                        <li><strong>activeScreen</strong> <code>String</code> path to the active screen for this stage. </li>
+                                        <li><strong>waitingScreen</strong> <code>String</code> path to the wait screen for this stage.</li>
+                                        <li><strong>timeout</strong> <code>Number</code> number of seconds alloted for this stage. (Default = 30)</li>
+                                        <li><strong>timeoutType</strong> <code>String</code> (not yet supported)</li>
+                                        <li><strong>start</strong> <code>String</code> (not yet supported)</li>
+                                    </ul>
+                                </li>
+                            </ul>
+
+                            <h3 id="treatment-paying-periods">payingPeriods</h3>
+                            <ul>
+                                <li><code>Number</code> number of periods for which period profit will acrue to <strong>totalProfit</strong>.</li>
+                            </ul>
+
+                            <h3 id="treatment-practice-periods">practicePeriods</h3>
+                            <ul>
+                                <li><code>Number</code> number of periods for which period profit will <em>not</em> acrue to <strong>totalProfit</strong>.</li>
+                            </ul>
+
+                            <h3 id="treatment-group-size">groupSize</h3>
+                            <ul>
+                                <li><code>Number</code> number of subjects in each group (Default = number of subjects)</li>
+                            </ul>
+
+                            <h3 id="treatment-exchange-rate">exchangeRate</h3>
+                            (Not supported yet.)
+
+                            <h3 id="treatment-start-endowment">startEndowment</h3>
+                            (Not supported yet.)
+
+                            <h3 id="treatment-show-up-fee">showUpFee</h3>
+                            <ul>
+                                <li><code>Number</code> show-up fee (Default = 0)</li>
+                            </ul>
+
+
+                        </div>
+                        <div class="docs-section">
+                            <div class="page-header"><h1 id="examples">Examples</h1></div>
+                            <p>The following examples can be uploaded to your treatments folder and tested as they are. Feel free to modify these files. Send any questions you have to <a href="mailto:jon@economistry.com">jon@economistry.com</a>.</p>
+                            <ul>
+                                <li><a href="/examples/pg_game.zip">Public Goods (pg_game.zip) <span class="glyphicon glyphicon-download"></span></a></li>
+                                <li><a href="/examples/guess.zip">Guessing Game (guess.zip) <span class="glyphicon glyphicon-download"></span></a></li>
+                                <li><a href="/examples/ultimatum.zip">Ultimatum (ultimatum.zip) <span class="glyphicon glyphicon-download"></span></a></li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <script>
+                $(function(){
+                    $(document.body).scrollspy({
+                        target: '.sidebar',
+                        offset: 70 
+                    });
+
+                    $(window).on('load', function () {
+                      $(document.body).scrollspy('refresh')
+                    });
+
+                    $('.docs-container [href=#]').click(function (e) {
+                      e.preventDefault()
+                    })
+                });
+            </script>
+        </body>
+    </html>

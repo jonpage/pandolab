@@ -1,0 +1,11 @@
+{
+   "name":"Guessing Game Example",
+   "stages": [{"name": "Guess", "activeScreen": "guess.jade", "waitingScreen": "wait.jade", "timeout": 30, "timeoutType": "ifnoinput", "start" : "wait"},
+      {"name": "Profit Display", "activeScreen": "profit.jade", "waitingScreen": "wait.jade", "timeout": 30, "timeoutType":"ifnoinput"}],
+   "payingPeriods": 2,
+   "practicePeriods": 1,
+   "groupSize": 2,
+   "exchangeRate": 0.07,
+   "startEndowment": 0,
+   "showUpFee": 10
+}

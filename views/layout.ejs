@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>PandoLab</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- CSS -->
+        <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <script src="../js/jquery-2.0.2.min.js"></script>
+
+        <!-- Needed to support JSON.parse() and JSON.stringify() in older browsers. -->
+        <script src="../js/json2.js"></script>
+        <script src="../js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<% if (!user) { %>
+			<p>
+			<a href="/">Home</a> | 
+			<a href="/login">Log In</a>
+			</p>
+		<% } else { %>
+			<p>
+			<a href="/">Home</a> | 
+			<a href="/account">Account</a> | 
+			<a href="/logout">Log Out</a>
+			</p>
+		<% } %>
+		<%- body %>
+	</body>
+</html>

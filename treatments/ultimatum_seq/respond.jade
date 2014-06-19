@@ -1,0 +1,22 @@
+nav.navbar.navbar-fixed-top
+    p.pull-left.navbar-text Period #{+globals.period+1} out of #{globals.numPeriods}
+    p.pull-right.navbar-text Time remaining: 
+        span#time #{time}
+.container(style="padding-top:50px")
+    .jumbotron
+        .container
+            p The offer: #{subjects[subjectNum].share} 
+            br
+            button.btn#accept Accept
+            br
+            button.btn#reject Reject
+
+script.
+    $('#accept').click(function(){
+        experimentData.accept = true;    
+        endStage();
+    });
+    $('#reject').click(function(){
+        experimentData.accept = false;
+        endStage();
+    });

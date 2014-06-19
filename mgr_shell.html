@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Experiment Manager</title>
+        <!-- <script src="/socket.io/socket.io.js"></script> -->
+        <!-- <script src="http://cdn.sockjs.org/sockjs&#45;0.3.min.js"></script> -->
+        <script src="../js/sockjs-0.3.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- CSS -->
+        <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <!-- <link href="css/bootstrap&#45;theme.min.css" rel="stylesheet" media="screen"> -->
+        <!-- <link rel="stylesheet" href="/css/bootstrap&#45;glyphicons.css" media="screen"> -->
+        <!-- <script src="http://code.jquery.com/jquery&#45;1.10.1.min.js"></script> -->
+        <script src="../js/jquery-2.0.2.min.js"></script>
+
+        <!-- Needed to support JSON.parse() and JSON.stringify() in older browsers. -->
+        <script src="../js/json2.js"></script>
+        <script src="../js/bootstrap.min.js"></script>
+        <script src="../js/parsley.min.js"></script>
+        <style type="text/css" media="screen">
+            body {
+                padding-bottom: 50px;
+                padding-top: 70px;
+            }
+            /* panel fix */
+            .panel {
+                padding: 0px;
+                margin-bottom: 5px;
+            }
+            .panel-heading {
+                margin: 0px;
+            }
+            .panel-body {
+                padding: 15px;
+            }
+            .panel-collapse {
+                overflow-x: auto;
+            }
+            /*
+            * jQuery File Upload UI Plugin CSS 8.8.1
+            * https://github.com/blueimp/jQuery-File-Upload
+            *
+            * Copyright 2010, Sebastian Tschan
+            * https://blueimp.net
+            *
+            * Licensed under the MIT license:
+            * http://www.opensource.org/licenses/MIT
+            */
+
+            .fileinput-button {
+                position: relative;
+                overflow: hidden;
+            }
+            .fileinput-button input {
+                position: absolute;
+                top: 0;
+                right: 0;
+                margin: 0;
+                opacity: 0;
+                filter: alpha(opacity=0);
+                transform: translate(-300px, 0) scale(4);
+                font-size: 23px;
+                direction: ltr;
+                cursor: pointer;
+            }
+            .fileupload-buttonbar .btn,
+            .fileupload-buttonbar .toggle {
+                margin-bottom: 5px;
+            }
+            .progress-animated .progress-bar,
+            .progress-animated .bar {
+                background: url(../img/progressbar.gif) !important;
+                filter: none;
+            }
+            .fileupload-loading {
+                float: right;
+                width: 32px;
+                height: 32px;
+                background: url(../img/loading.gif) center no-repeat;
+                background-size: contain;
+                display: none;
+            }
+            .fileupload-processing .fileupload-loading {
+                display: block;
+            }
+            .files audio,
+            .files video {
+                max-width: 300px;
+            }
+
+            @media (max-width: 767px) {
+                .fileupload-buttonbar .toggle,
+                .files .toggle,
+                .files .btn span {
+                    display: none;
+                }
+                .files .name {
+                    width: 80px;
+                    word-wrap: break-word;
+                }
+            }
+        </style>    
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">&hellip;</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="#" class="navbar-brand">PandoLab: <span id='codeSpan'>shortCode</span></a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Session Manager</a></li>
+                <li><a href="/logs/">Logs</a></li>
+            </ul>
+            
+            <ul class="nav navbar-nav pull-right">
+                <li>
+                    <a href="/new-lab">New Lab</a>
+                </li>
+                <li>
+                <a href="/help">Help</a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">EMAIL-ADDRESS <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a data-toggle="modal" href="#change-pwd" class="btn">
+                                Change Password
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/logout">Logout</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        </nav>
+
+            <!-- Modal Dialog for Change Password -->
+            <div class="modal fade" id="change-pwd" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form id="change-pwd-form" action="/change-pwd" method="post">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 id="modalLabel" class="modal-title">Change Password</h4>
+                            </div>
+                            <div class="modal-body">
+                                <input id="new-password-1" data-required="true" type="password" class="form-control" name="new-password-1" placeholder="New Password">
+                                <input data-equalto="#new-password-1" data-required="true" data-trigger="change" type="password" class="form-control" name="new-password-2" placeholder="Repeat New Password">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Dialog for Adding Treatment -->
+            <div class="modal fade" id="addTreatment" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 id="modalLabel" class="modal-title">Add Treatment</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <select id="availableTreatments" multiple class="form-control">
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <button id="addSelectedTreatments" type="button" class="btn btn-primary">Add Selected Treatments</button>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-6 col-lg-6" style="text-align:right">
+                                    <div class="form-group">
+                                        <span class="btn btn-success fileinput-button">
+                                            <i class="glyphicon glyphicon-plus"></i>
+                                            <span>Upload Treatment (*.zip)</span>
+                                            <input id="fileupload" type="file" name="files[]" multiple data-url="/upload-zip/">
+                                        </span>
+                                    </div>
+                                    <div class="form-group">
+                                        <button id="deleteSelectedTreatments" type="button" class="btn btn-danger">Delete Selected Treatments</button>
+                                        <div class="progress progress-striped active">
+                                            <div class="progress-bar"  role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                                                <span class="sr-only">0% Complete</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-1 col-md-2 col-lg-2">
+                </div>
+                <div class="col-xs-12 col-sm-10 col-lg-8 col-md-8">
+                    <div class="page-header">
+                        <h1>Treatments</h1>
+                        <table class="table table-hover dropdown">
+                            <thead>
+                                <tr>
+                                    <th>Order</th>
+                                    <th>Treatment Name</th>
+                                </tr>
+                            </thead>
+                            <tbody id="treatmentTableBody">
+                                <tr id="addTreatmentRow">
+                                    <td></td>
+                                    <td>
+                                        <a data-toggle="modal" href="#addTreatment" class="btn">
+                                            <span class="glyphicon glyphicon-plus"></span> Add Treatment
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <button id="start" type="button" class="btn btn-success btn-large">Start Treatment</button>
+                    <button id="stop" type="button" class="btn btn-danger btn-large">Stop Treatment</button>
+                    <div class="treatment-error"></div>
+
+                    <div class="page-header">
+                        <h1>Tables</h1>
+                    </div>
+                    <div id="tables" class="panel-group">
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <a class="accordion-toggle" data-toggle="collapse" href="#clients" data-target="#clients">Clients</a>
+                                </h3>
+                            </div>
+                            <div id="clients" class="panel-collapse collapse in">
+                                <div class="panel-body">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr><th>Subject #</th><th>Client #</th><th>Period</th><th>State</th><th>Time</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>No Subjects Yet.</td><td></td><td></td><td></td><td></td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        <script>
+            $(function() {
+                $("#change-pwd").on("shown.bs.modal", function(){
+                    $("#change-pwd-form").parsley();
+                });
+                $("#change-pwd-button").click(function(){
+                    alert("Trying to change the password.");
+                });
+            });
+        </script>
+        <script src="../js/vendor/jquery.ui.widget.js"></script>
+        <script src="../js/jquery.iframe-transport.js"></script>
+        <script src="../js/jquery.fileupload.js"></script>
+        <script src="../js/mgr_shell.js"></script>
+    </body>
+</html>

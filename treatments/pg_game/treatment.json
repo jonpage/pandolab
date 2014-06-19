@@ -1,0 +1,11 @@
+{
+   "name":"Public Good Example",
+   "stages": [{"name": "Contribution Entry", "activeScreen": "contribution.jade", "waitingScreen": "wait.jade", "timeout": 30, "timeoutType": "ifnoinput", "start" : "wait"},
+      {"name": "Profit Display", "activeScreen": "profit.jade", "waitingScreen": "wait.jade", "timeout": 41, "timeoutType":"ifnoinput"}],
+   "payingPeriods": 2,
+   "practicePeriods": 1,
+   "groupSize": 2,
+   "exchangeRate": 0.07,
+   "startEndowment": 0,
+   "showUpFee": 10
+}

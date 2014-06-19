@@ -1,0 +1,7 @@
+.container(style="padding-top:50px")
+    .jumbotron
+        .container
+            p Your Profit: #{subjects[subjectNum].profit.toFixed(1)}
+            P Your Total Profit: #{subjects[subjectNum].totalProfit.toFixed(1)}
+            br
+            button#submit.btn(onclick="endStage();") Continue

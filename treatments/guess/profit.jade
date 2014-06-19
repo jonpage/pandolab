@@ -1,0 +1,12 @@
+.container(style="padding-top:50px")
+    .jumbotron
+        .container
+            p Your Guess: #{subjects[subjectNum].guess}
+            ul
+                li Average guesses: #{subjects[subjectNum].groupAverage}
+                li Number to guess (2/3*average): #{subjects[subjectNum].targetValue}
+                li You won (1=you won, 0=you didn ot): #{subjects[subjectNum].isWinner}
+                li Number of winners: #{subjects[subjectNum].numWinners}
+            P Your income: #{subjects[subjectNum].profit}
+            br
+            button#submit.btn(onclick="endStage();") Continue

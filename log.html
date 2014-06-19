@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Experiment Manager</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <script src="../js/jquery-2.0.2.min.js"></script>
+        <script src="../js/bootstrap.min.js"></script>
+        <script src="../js/parsley.min.js"></script>
+        <style type="text/css" media="screen">
+            body {
+                padding-bottom: 50px;
+                padding-top: 70px;
+            }
+        </style>    
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">&hellip;</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="#" class="navbar-brand">PandoLab</a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/manager/">Session Manager</a></li>
+                <li class="active"><a href="#">Logs</a></li>
+            </ul>
+            
+            <ul class="nav navbar-nav pull-right">
+                <li>
+                    <a href="/new-lab">New Lab</a>
+                </li>
+                <li>
+                    <a href="/help">Help</a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">EMAIL-ADDRESS <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a data-toggle="modal" href="#change-pwd" class="btn">
+                                Change Password
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/logout">Logout</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+        </div>
+        </nav>
+        <!-- Modal Dialog for Change Password -->
+        <div class="modal fade" id="change-pwd" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="change-pwd-form" action="/change-pwd" method="post">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 id="modalLabel" class="modal-title">Change Password</h4>
+                        </div>
+                        <div class="modal-body">
+                            <input id="new-password-1" data-required="true" type="password" class="form-control" name="new-password-1" placeholder="New Password">
+                            <input data-equalto="#new-password-1" data-required="true" data-trigger="change" type="password" class="form-control" name="new-password-2" placeholder="Repeat New Password">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <ul class="list-group">
+                CONTENT
+            </ul>
+        </div>
+        <script>
+            $(function() {
+                $("#change-pwd").on("shown.bs.modal", function(){
+                    $("#change-pwd-form").parsley();
+                });
+                $("#change-pwd-button").click(function(){
+                    alert("Trying to change the password.");
+                });
+            });
+        </script>
+    </body>
+</html>

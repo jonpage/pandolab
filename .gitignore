@@ -1,0 +1,4 @@
+# Don't track DS_STORE
+.DS_STORE
+# or swap files
+*.swp

@@ -1,0 +1,12 @@
+nav.navbar.navbar-fixed-top
+    p.pull-left.navbar-text Period #{+globals.period+1} out of #{globals.numPeriods}
+    p.pull-right.navbar-text Time remaining: 
+        span#time #{time}
+.container(style="padding-top:50px")
+    .jumbotron
+        .container
+            p Your endowment: #{globals.endowment}
+            p Your (Player: #{subjectNum}, Group: #{subjects[subjectNum].group}) contribution: 
+            input#contribution.required(data-type="number", data-range="[0,20]")
+            br
+            button#submit.btn Submit

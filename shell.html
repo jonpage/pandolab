@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Experiment</title>
+        <!-- <script src="/js/socket.io.js"></script> -->
+        <!-- <script src="http://cdn.sockjs.org/sockjs&#45;0.3.min.js"></script> -->
+        <script src="../js/sockjs-0.3.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- <link href="css/bootstrap&#45;responsive.css" rel="stylesheet"> -->
+        <!-- Bootstrap -->
+        <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <!-- <script src="http://code.jquery.com/jquery&#45;1.10.1.min.js"></script> -->
+        <script src="../js/jquery-2.0.2.min.js"></script>
+        <script src="../js/bootstrap.min.js"></script>
+        <style type="text/css" media="screen">
+            input.parsley-error, textarea.parsley-error {
+                color: #B94A48 !important;
+                background-color: #F2DEDE !important;
+                border: 1px solid #EED3D7 !important;
+            }  
+            ul.parsley-error-list li {
+                line-height: 11px;
+                font-size: 11px;
+                list-style-type: none;
+                padding: 2px 4px;
+                color: #d14;
+            }
+
+            .boot-nav-fix-top-pad {
+                padding-top: 70px;
+            }
+        </style>
+    </head>
+    <body>
+        <script src="../js/parsley.min.js"></script>
+        <form id="validationArea">
+            <div id="stage">
+                <div class="container" style="padding-top:50px">
+                    <div class="jumbotron">
+                      <div class="container">
+                        <h1>Welcome!</h1>
+                        <p>Please wait for the experiment to begin.</p>
+                      </div>
+                  </div>
+              </div>
+            </div>
+        </form>
+        <script>
+            // Decrement timer values by 1
+            var decrementTime = function() {
+                $("#time").text(function(index, oldText) {
+                    return isNaN(+oldText) ? 0 : +oldText > 0 ? +oldText - 1 : 0;
+                });
+            }
+
+            // cookie utility
+            var getCookie = function (c_name) {
+                var c_value = document.cookie;
+                var c_start = c_value.indexOf(" " + c_name + "=");
+                if (c_start == -1) {
+                    c_start = c_value.indexOf(c_name + "=");
+                }
+                if (c_start == -1) {
+                    c_value = null;
+                } else {
+                    c_start = c_value.indexOf("=", c_start) + 1;
+                    var c_end = c_value.indexOf(";", c_start);
+                    if (c_end == -1) {
+                        c_end = c_value.length;
+                    }
+                    c_value = unescape(c_value.substring(c_start,c_end));
+                }
+                return c_value;
+            }
+
+            // indicator to prevent overclicking the submit button
+            var endStageClicked = false;
+
+            // connect to server
+            var sock = new SockJS('/subject/conn');
+
+            // do not use locals here for security reasons. 
+            var experimentData = {};
+
+            var timeInterval = false;
+
+            // run when this client connects
+            sock.onopen = function () {
+                console.log("Connection to SockJS established.");
+
+                // send the old socket to the server if a cookie exists
+                var socket_id = getCookie("socket_id");
+                if (socket_id) {
+                    sock.send(JSON.stringify({messageName: 'old_socket', id : socket_id}));
+                } else {
+                    sock.send(JSON.stringify({messageName: 'old_socket', id : false}));
+                }
+
+            };
+
+            sock.onclose = function() {console.log("Connection lost.")};
+
+            sock.onmessage = function(e) {
+                // test connection
+                console.log("[.] message: " + e.data);
+                // data always comes in as a string, turn this into an object
+                var data = JSON.parse(e.data);
+                // route the message based on the messageName
+                switch (data.messageName) {
+                    case "newID":
+                        // add cookie to store the socket uuid
+                        console.log(data);
+                        var exdate=new Date();
+                        exdate.setDate(exdate.getDate() + 2);
+                        document.cookie = "socket_id=" + data.id + ";expires=" + exdate.toUTCString();
+                        break;
+                        
+                    case "update":
+                        // manage screen updates from the server
+                        $("#stage").html(data.html);
+
+                        // see if there is a time element
+                        if (document.getElementById("time")) {
+                            timeInterval = setInterval(decrementTime, 1000);
+                        } else {
+                            clearInterval(timeInterval);
+                            timeInterval = false;
+                        }
+
+                        // if there is a nav with navbar-fixed-top, then add the boot-nav-fix-top-pad class to the body.
+                        if ($(".navbar-fixed-top").length > 0) {
+                            $("body").addClass("boot-nav-fix-top-pad");
+                        } else {
+                            $("body").removeClass("boot-nav-fix-top-pad");
+                        }
+
+
+                        // reset endStageClicked boolean
+                        endStageClicked = false;
+
+                        // keep buttons from submitting by default
+                        $("button").attr("type", "button").addClass("btn");
+                        $("[type='submit']").attr("type", "button");
+
+                        // if there is a button#submit element, use it to call endStage
+                        $("button#submit").click(endStage);
+
+                        // all other buttons should call update with the command = the id of the button
+                        $("button:not(#submit)").click(function() {
+                            updateData($(this).attr("id"));
+                        });
+
+                        // setup form validation
+                        $('#validationArea').parsley('destroy');
+                        $('#validationArea').parsley();
+                        
+                        break;
+
+                    case "requestData":
+                        // handle requests for current contents of experimentData
+                        sock.send(JSON.stringify({messageName: "sendData", experimentData: experimentData}));
+                        break;
+
+                    default:
+                        // do nothing if the messageName doesn't match
+                        console.log("no matching messageName");
+                        break;
+                }
+            };
+
+            // this sends an update with the current data and the command pressed
+            var updateData = function(command) {
+                // add to experimentData the value of all input tags using their id as the variable name
+                $('input').each(function(){
+                    var thisId = $(this).attr('id');
+                    if(thisId.length > 0) {
+                        experimentData[thisId] = $(this).val();
+                    }
+                });
+                sock.send(JSON.stringify({'messageName': 'updateData', 'command': command, 'experimentData': experimentData}));
+                console.log("updataData event emitted");
+            };
+
+            // this is the handler that updates should implement if they plan to listen to 
+            var endStage = function () {
+                console.log("endStage function entered");
+                // only do this if endStage has not already been caled
+                if (!endStageClicked) {
+                    // test if form is valid
+                    if( $('#validationArea').parsley('validate') ) {
+                        // add to experimentData the value of all input tags using their id as the variable name
+                        $('input').each(function(){
+                            var thisId = $(this).attr('id');
+                            if(thisId.length > 0) {
+                                experimentData[thisId] = $(this).val();
+                            }
+                        });
+
+                        sock.send(JSON.stringify({'messageName': 'endStage', experimentData: experimentData}));
+                        console.log("endStage event emitted.");
+                        // reset experimentData
+                        experimentData = {};
+                        endStageClicked = true;
+                    }
+                }
+                console.log("endStage function finished");
+            };
+        </script>
+    </body>
+</html>

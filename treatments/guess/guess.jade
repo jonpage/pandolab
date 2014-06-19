@@ -1,0 +1,11 @@
+nav.navbar.navbar-fixed-top
+    p.pull-left.navbar-text Period #{+globals.period+1} out of #{globals.numPeriods}
+    p.pull-right.navbar-text Time remaining: 
+        span#time #{time}
+.container(style="padding-top:50px")
+    .jumbotron
+        .container
+            p Your guess: 
+            input#guess.required(data-type="number", data-range="[#{globals.minGuess},#{globals.maxGuess}]")
+            br
+            button#submit.btn Submit
